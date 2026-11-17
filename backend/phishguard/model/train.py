@@ -9,7 +9,8 @@ What it does, in order:
   2. Split 80/20 BY REGISTRABLE DOMAIN: every URL of a site lands on the same
      side. A random split would put paypal-x.netlify.app/a in train and
      /b in test, and the model would be graded on sites it has already seen.
-  3. 5-fold grouped cross-validation on the training part (stability check).
+  3. 5-fold grouped cross-validation on the training part (stability check),
+     plus a random split for comparison, to show how optimistic it would be.
   4. Fit XGBoost (served) and logistic regression (baseline for comparison).
   5. Test-set metrics for the model alone and for model + lexical rules.
   6. External test on PhiUSIIL (different researchers, different year).
@@ -27,7 +28,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (accuracy_score, average_precision_score, confusion_matrix,
                              f1_score, precision_recall_curve, precision_score,
                              recall_score, roc_auc_score)
-from sklearn.model_selection import GroupShuffleSplit, StratifiedGroupKFold
+from sklearn.model_selection import GroupShuffleSplit, StratifiedGroupKFold, train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from xgboost import XGBClassifier
@@ -127,6 +128,15 @@ def main() -> None:
     cv = cross_validate(X[train_idx], y[train_idx], groups[train_idx])
     print(f"  F1 {cv['f1_mean']:.3f} +/- {cv['f1_std']:.3f}, ROC-AUC {cv['roc_auc_mean']:.3f}")
 
+    # How optimistic would an ordinary random split have been? Same features
+    # and model, but rows shuffled without regard to their domain, so URLs of
+    # the same site land on both sides.
+    r_train, r_test = train_test_split(np.arange(len(y)), test_size=0.2, random_state=SEED, stratify=y)
+    r_model = XGBClassifier(**XGB_PARAMS).fit(X[r_train], y[r_train])
+    random_split = metrics_at(y[r_test], r_model.predict_proba(X[r_test])[:, 1])
+    print(f"  random split (for comparison only): acc {random_split['accuracy']:.3f}, "
+          f"ROC-AUC {random_split['roc_auc']:.3f}")
+
     print("Training XGBoost and the logistic-regression baseline ...")
     model = XGBClassifier(**XGB_PARAMS).fit(X[train_idx], y[train_idx])
     baseline = make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000)).fit(X[train_idx], y[train_idx])
@@ -225,6 +235,7 @@ def main() -> None:
         },
         "score_bands": {"suspicious_at": SUSPICIOUS_AT, "phishing_at": PHISHING_AT},
         "cv": cv,
+        "random_split_comparison": random_split,
         "test": test,
         "feature_importance": importance,
         "external": {"phiusiil": external} if external else {},
