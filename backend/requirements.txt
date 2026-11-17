@@ -1,0 +1,16 @@
+# --- API ---
+fastapi
+uvicorn[standard]
+httpx
+# --- feature extraction ---
+dnspython
+tldextract
+beautifulsoup4
+python-whois
+# --- model ---
+numpy
+pandas
+scikit-learn
+xgboost
+# --- tests ---
+pytest
