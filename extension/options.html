@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PhishGuard settings</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { padding: 32px 16px; }
+    main { width: min(640px, 100%); margin: 0 auto; display: grid; gap: 18px; }
+    section { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+    h1 { margin: 0; font-size: 22px; }
+    h2 { margin: 0 0 10px; font-size: 15px; }
+    label { display: grid; gap: 6px; margin-bottom: 12px; }
+    input[type=text], input[type=url] {
+      background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+      border-radius: 10px; padding: 8px 10px; font: inherit;
+    }
+    .row { display: flex; gap: 8px; }
+    .row input { flex: 1; }
+    #allowlist { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 6px; }
+    #allowlist li { display: flex; justify-content: space-between; align-items: center;
+      background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }
+    #saved { color: var(--safe); margin-left: 10px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="brand"><img src="icons/icon48.png" alt=""><h1>PhishGuard settings</h1></div>
+
+    <section>
+      <h2>Protection</h2>
+      <label><span><input type="checkbox" id="enabled"> Check pages before they load</span></label>
+      <label>Warn when the risk score is at least <strong id="thresholdValue"></strong>
+        <input type="range" id="threshold" min="40" max="95" step="5">
+        <span class="muted">70 matches the "likely phishing" band. Lower catches more but warns on more safe sites.</span>
+      </label>
+      <label>API address
+        <input type="url" id="apiBase" placeholder="http://127.0.0.1:8000">
+      </label>
+      <button class="btn primary" id="save">Save</button><span id="saved" hidden>Saved</span>
+    </section>
+
+    <section>
+      <h2>Allowlist</h2>
+      <p class="muted">Sites you trust are never checked. An entry also covers its subdomains.</p>
+      <div class="row">
+        <input type="text" id="newEntry" placeholder="example.com">
+        <button class="btn" id="add">Add</button>
+      </div>
+      <ul id="allowlist"></ul>
+    </section>
+  </main>
+  <script type="module" src="options.js"></script>
+</body>
+</html>

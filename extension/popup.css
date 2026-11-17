@@ -1,0 +1,16 @@
+body { width: 360px; padding: 14px 16px; }
+
+header, footer { display: flex; justify-content: space-between; align-items: center; }
+footer { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px; }
+
+.state { margin: 18px 0; padding: 14px; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--line); }
+.state.error { color: #fecaca; border-color: rgba(239, 68, 68, .4); }
+
+.summary { display: flex; gap: 14px; align-items: center; margin: 14px 0 12px; }
+.who { min-width: 0; }
+.host { margin-top: 6px; font-size: 13px; }
+.small { font-size: 12px; }
+
+.reasons li { font-size: 13px; }
+.actions { display: flex; gap: 8px; margin-top: 12px; }
+.actions .btn { flex: 1; }

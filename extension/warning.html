@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PhishGuard warning</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="warning.css">
+</head>
+<body>
+  <main class="card" aria-labelledby="title">
+    <div class="brand"><img src="icons/icon48.png" alt=""> PhishGuard</div>
+    <div class="head">
+      <div class="ring" id="ring"></div>
+      <div>
+        <span class="pill phishing" id="pill">Likely phishing</span>
+        <h1 id="title">This page looks like a phishing site</h1>
+        <p class="muted">It may try to steal passwords, card numbers or one-time codes.
+          PhishGuard stopped it before it loaded.</p>
+      </div>
+    </div>
+
+    <div class="url">
+      <span class="muted">Blocked address</span>
+      <div class="mono" id="url"></div>
+    </div>
+
+    <h2>Why it was flagged</h2>
+    <ul class="reasons" id="reasons"></ul>
+
+    <div class="actions">
+      <button class="btn primary" id="leave">Back to safety</button>
+      <button class="btn" id="trust">Always trust <span id="domain"></span></button>
+      <button class="btn danger" id="proceed">Continue anyway (not recommended)</button>
+    </div>
+  </main>
+  <script type="module" src="warning.js"></script>
+</body>
+</html>

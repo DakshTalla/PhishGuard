@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>PhishGuard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="brand"><img src="icons/icon48.png" alt=""> PhishGuard</div>
+    <a href="options.html" target="_blank" id="settings">Settings</a>
+  </header>
+
+  <section id="state" class="state muted">Checking this page...</section>
+
+  <section id="result" hidden>
+    <div class="summary">
+      <div class="ring" id="ring"></div>
+      <div class="who">
+        <span class="pill" id="pill"></span>
+        <div class="mono host" id="host"></div>
+        <div class="muted small" id="meta"></div>
+      </div>
+    </div>
+    <ul class="reasons" id="reasons"></ul>
+    <div class="actions">
+      <button class="btn primary" id="deep">Deep scan</button>
+      <button class="btn" id="trust">Trust site</button>
+    </div>
+  </section>
+
+  <footer><a href="http://localhost:3100" target="_blank">Open dashboard</a></footer>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
