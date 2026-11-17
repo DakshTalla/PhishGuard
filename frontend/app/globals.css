@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* Design tokens. Every colour in the UI comes from here; Tailwind turns each
+   --color-x into classes such as bg-x, text-x and border-x. Values follow a
+   validated dark chart palette (status colours always ship with a label). */
+@theme {
+  --color-page: #0d0d0d;
+  --color-surface: #1a1a19;
+  --color-raised: #222220;
+  --color-line: #2c2c2a;
+  --color-axis: #383835;
+  --color-ink: #f0efec;
+  --color-ink-2: #c3c2b7;
+  --color-muted: #898781;
+
+  --color-accent: #3987e5;      /* brand / categorical slot 1 */
+  --color-series-2: #d95926;    /* categorical slot 2 */
+
+  --color-good: #0ca30c;
+  --color-warning: #fab219;
+  --color-critical: #d03b3b;
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Cascadia Code", ui-monospace, Consolas, monospace;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-page);
+  color: var(--color-ink);
+}
+
+/* A soft glow behind the hero, the only decorative flourish on the page. */
+.hero-glow {
+  background:
+    radial-gradient(700px 320px at 50% -60px, rgba(57, 135, 229, 0.22), transparent 70%),
+    radial-gradient(500px 260px at 85% 0, rgba(217, 89, 38, 0.10), transparent 70%);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.rise {
+  animation: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: none; }
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 10px; }
