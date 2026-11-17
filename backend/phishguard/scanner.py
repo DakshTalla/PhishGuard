@@ -94,8 +94,13 @@ class Scanner:
                                   message=f"{lex.parsed.registrable_domain} is a well-known site, "
                                           "so the score is capped"))
 
-        explained = {r.feature for r in reasons if r.feature}
-        reasons += [r for r in model_reasons(lex, pred) if r.feature not in explained]
+        # Model sentences explain a high probability. On a capped well-known
+        # site they would contradict the verdict ("HIGH: uses the word login"
+        # next to "Looks safe"), so they are left out; the raw contributions
+        # are still in the feature breakdown.
+        if not known_good:
+            explained = {r.feature for r in reasons if r.feature}
+            reasons += [r for r in model_reasons(lex, pred) if r.feature not in explained]
         reasons.sort(key=lambda r: (_SEVERITY_ORDER[r.severity], -r.weight))
 
         score = score_of(risk)

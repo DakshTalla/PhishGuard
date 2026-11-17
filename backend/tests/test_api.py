@@ -43,8 +43,11 @@ def test_fast_scan_shape(make_client):
 
 
 def test_known_good_site_is_safe(make_client):
-    body = scan(make_client(), "https://github.com/vercel/next.js").json()
+    body = scan(make_client(), "https://github.com/login").json()
     assert body["verdict"] == "safe" and body["known_good"]
+    # No "HIGH: uses the word login" next to a safe verdict.
+    assert not any(r["source"] == "model" for r in body["reasons"])
+    assert body["contributions"]  # the raw model view is still available
 
 
 def test_full_scan_adds_host_and_page_reasons(make_client):
