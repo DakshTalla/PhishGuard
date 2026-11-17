@@ -15,7 +15,7 @@ const CACHE_MS = 10 * 60 * 1000;
 const cache = new Map(); // url -> { result, at }  (lost when the worker sleeps; the API caches too)
 const inflight = new Map(); // url -> Promise, so onBeforeNavigate + onCommitted share one request
 
-const BADGE_COLORS = { safe: "#16a34a", suspicious: "#d97706", phishing: "#dc2626" };
+const BADGE_COLORS = { safe: "#0ca30c", suspicious: "#c98500", phishing: "#d03b3b" };
 
 async function cachedScan(apiBase, url) {
   const hit = cache.get(url);

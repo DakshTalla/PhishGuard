@@ -1,7 +1,7 @@
 // Small DOM helpers shared by the popup and the warning page.
 import { bandFor, topReasons } from "./core.js";
 
-const COLORS = { safe: "#22c55e", suspicious: "#f59e0b", phishing: "#ef4444" };
+const COLORS = { safe: "#0ca30c", suspicious: "#fab219", phishing: "#d03b3b" };
 
 /** Fill an element with a circular score gauge. */
 export function renderRing(el, score) {
@@ -14,7 +14,7 @@ export function renderRing(el, score) {
       <circle class="value" cx="42" cy="42" r="${r}" fill="none" stroke-width="8"
         stroke="${COLORS[band]}" stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}"></circle>
     </svg>
-    <div class="num" style="color:${COLORS[band]}">${score}</div>`;
+    <div class="num">${score}</div>`; // number in ink colour; the arc carries the severity
   el.setAttribute("role", "img");
   el.setAttribute("aria-label", `Risk score ${score} out of 100 (${band})`);
   // Next frame, so the CSS transition animates from empty to the score.

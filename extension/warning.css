@@ -4,14 +4,14 @@ body {
   place-items: center;
   padding: 24px 16px;
   background:
-    radial-gradient(1200px 600px at 50% -10%, rgba(239, 68, 68, .28), transparent 60%),
+    radial-gradient(1200px 600px at 50% -10%, rgba(208, 59, 59, .28), transparent 60%),
     var(--bg);
 }
 
 .card {
   width: min(720px, 100%);
-  background: rgba(17, 26, 46, .92);
-  border: 1px solid rgba(239, 68, 68, .35);
+  background: rgba(26, 26, 25, .94);
+  border: 1px solid rgba(208, 59, 59, .4);
   border-radius: 20px;
   padding: 28px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, .45);
@@ -26,7 +26,7 @@ p { margin: 0; }
   margin-top: 16px; padding: 12px 14px; border-radius: 12px;
   background: var(--panel-2); border: 1px solid var(--line);
 }
-.url .mono { color: #fecaca; margin-top: 2px; }
+.url .mono { color: #f3b4b4; margin-top: 2px; }
 
 .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; align-items: center; }
 .actions .danger { margin-left: auto; }
