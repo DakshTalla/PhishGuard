@@ -88,6 +88,7 @@ def test_admin_endpoints_report_history(make_client):
     stats = client.get("/api/admin/stats").json()
     assert stats["total_scans"] == 2 and stats["by_client"] == {"extension": 1, "api": 1}
     assert stats["by_verdict"]["phishing"] == 1
+    assert stats["per_day"][0]["phishing"] == 1 and stats["per_day"][0]["total"] == 2
     history = client.get("/api/admin/history?verdict=phishing").json()
     assert len(history) == 1 and history[0]["domain"] == "verify-account.xyz"
     top = client.get("/api/admin/top-domains").json()

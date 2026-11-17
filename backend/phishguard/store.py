@@ -105,7 +105,8 @@ class ScanStore:
             cached = db.execute("SELECT COUNT(*) FROM scans WHERE cached = 1").fetchone()[0]
             per_day = [dict(r) for r in db.execute(
                 "SELECT substr(created_at, 1, 10) AS day, COUNT(*) AS total, "
-                "SUM(verdict != 'safe') AS flagged FROM scans "
+                "SUM(verdict = 'safe') AS safe, SUM(verdict = 'suspicious') AS suspicious, "
+                "SUM(verdict = 'phishing') AS phishing FROM scans "
                 "WHERE created_at >= date('now', ?) GROUP BY day ORDER BY day", (f"-{days - 1} days",))]
         flagged = by_verdict.get("suspicious", 0) + by_verdict.get("phishing", 0)
         return {
