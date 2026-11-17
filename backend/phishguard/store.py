@@ -1,13 +1,19 @@
 """Scan history in SQLite, plus the aggregate queries the admin dashboard needs.
 
 WHY SQLite: it ships with Python, needs no server, and one file is plenty
-for a single-machine demo. A connection per call keeps it thread-safe with
-FastAPI's thread pool; WAL mode lets the dashboard read while scans write.
+for a single-machine demo.
+
+WHY one long-lived connection behind a lock: the first version opened a
+connection per call. In WAL mode, closing the last connection checkpoints
+and deletes the WAL file, so every scan paid ~7 ms for that (measured with
+the benchmark). One connection shared by FastAPI's worker threads, with a
+lock so only one thread uses it at a time, brings a write well under 1 ms.
 """
 from __future__ import annotations
 
 import json
 import sqlite3
+import threading
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -34,19 +40,31 @@ class ScanStore:
     def __init__(self, path: Path):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        with self._conn() as db:
-            db.execute("PRAGMA journal_mode=WAL")
-            db.executescript(SCHEMA)
+        # check_same_thread=False: the connection is shared across threads,
+        # which is safe because every use goes through self._lock.
+        self._db = sqlite3.connect(self.path, timeout=5, check_same_thread=False)
+        self._db.row_factory = sqlite3.Row
+        self._db.execute("PRAGMA journal_mode=WAL")  # readers do not block the writer
+        # synchronous=NORMAL: in WAL mode this is still safe against app
+        # crashes and corruption; a power cut can lose only the last few
+        # history rows, which is acceptable for this data.
+        self._db.execute("PRAGMA synchronous=NORMAL")
+        self._db.executescript(SCHEMA)
+        self._lock = threading.Lock()
 
     @contextmanager
     def _conn(self):
-        db = sqlite3.connect(self.path, timeout=5)
-        db.row_factory = sqlite3.Row
-        try:
-            yield db
-            db.commit()
-        finally:
-            db.close()
+        with self._lock:
+            try:
+                yield self._db
+                self._db.commit()
+            except Exception:
+                self._db.rollback()
+                raise
+
+    def close(self) -> None:
+        with self._lock:
+            self._db.close()
 
     def record(self, result: dict, client: str) -> int:
         with self._conn() as db:

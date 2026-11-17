@@ -21,6 +21,7 @@ import logging
 import math
 import secrets
 import time
+from contextlib import asynccontextmanager
 from typing import Literal
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
@@ -60,7 +61,12 @@ def create_app(settings: Settings | None = None, scanner: Scanner | None = None)
     if not settings.admin_token:
         log.warning("PHISHGUARD_ADMIN_TOKEN is not set: admin endpoints are open (local use only)")
 
-    app = FastAPI(title="PhishGuard API", version=__version__,
+    @asynccontextmanager
+    async def lifespan(_: FastAPI):
+        yield
+        store.close()  # release the database file on shutdown
+
+    app = FastAPI(title="PhishGuard API", version=__version__, lifespan=lifespan,
                   description="Phishing and malicious URL detection with explainable scores.")
     app.add_middleware(CORSMiddleware, allow_origins=list(settings.cors_origins),
                        allow_methods=["GET", "POST"], allow_headers=["*"])
