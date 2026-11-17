@@ -1,0 +1,7 @@
+# WHY: keep LF in the repo so diffs are clean on every OS, but give the
+# Windows launchers CRLF because cmd.exe misreads LF-only .bat files.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.png binary
+*.ico binary
